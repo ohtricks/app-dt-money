@@ -1,11 +1,18 @@
-import { Text, View } from "react-native"
+import { DismissKeyboardView } from "@/components/DismissKeyboardView";
+import { PublicStackParamsList } from "@/routes/PublicRoutes";
+import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { Text, TextInput, TouchableOpacity, View } from "react-native"
+import { LoginForm } from "./LoginForm";
 
 export const Login = () => {
+    const navigation = useNavigation<StackNavigationProp<PublicStackParamsList>>();
+
     return (
-        <View className="flex-1 justify-center items-center bg-green-950">
-            <Text>
-                Login
-            </Text>
-        </View>
+        <DismissKeyboardView>
+            <View className="flex-1 w-[82%] self-center">
+                <LoginForm />
+            </View>
+        </DismissKeyboardView>
     )
 }
