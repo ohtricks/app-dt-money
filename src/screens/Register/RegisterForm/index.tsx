@@ -6,8 +6,10 @@ import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup"
 import { schema } from "./schema";
+import { useAthContext } from "@/context/auth.context";
+import { AxiosError } from "axios";
 
-interface FormRegisterParams {
+export interface FormRegisterParams {
     email: string;
     name: string;
     password: string;
@@ -31,9 +33,18 @@ export const RegisterForm = () => {
     });
 
     const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
-
-    const onSusbmit = async () => {
-
+    const { handleRegister } = useAthContext();
+    
+    const onSusbmit = async (dataForm: FormRegisterParams) => {
+        try {
+            handleRegister(dataForm);
+        } catch (error) {
+            if(error instanceof AxiosError){
+                console.log(error.response?.data);
+            }else{
+                console.log(error);
+            }
+        }
     };
 
     return (
