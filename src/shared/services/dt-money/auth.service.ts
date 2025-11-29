@@ -1,4 +1,4 @@
-import { dtMoneyApi } from "@/screens/api/dt-money";
+import { dtMoneyApi } from "@/shared/api/dt-money";
 import { FormLoginParams } from "@/screens/Login/LoginForm";
 import { FormRegisterParams } from "@/screens/Register/RegisterForm";
 import { IAuthenticateResponse } from "@/shared/interfaces/http/authenticate-respone";

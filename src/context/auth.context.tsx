@@ -3,6 +3,8 @@ import { FormRegisterParams } from "@/screens/Register/RegisterForm";
 import { createContext, FC, PropsWithChildren, useContext, useState } from "react";
 import * as authService from "@/shared/services/dt-money/auth.service";
 import { IUser } from "@/shared/interfaces/user-interface";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IAuthenticateResponse } from "@/shared/interfaces/http/authenticate-respone";
 
 type AuthContextType = {
     user: IUser | null;
@@ -10,6 +12,7 @@ type AuthContextType = {
     handleAuthenticate: (params: FormLoginParams) => Promise<void>;
     handleRegister: (params: FormRegisterParams) => Promise<void>;
     handleLogout: () => void;
+    restoreUserSession: () => Promise<string | null>;
 }
 
 export const AuthContext = createContext<AuthContextType>(
@@ -24,28 +27,53 @@ export const AuthContextProvider: FC<PropsWithChildren>= ({children}) => {
     const handleAuthenticate = async (userData: FormLoginParams) => {
         const { user, token } = await authService.authenticate(userData);
 
+        await AsyncStorage.setItem("dt-money-user", JSON.stringify({
+            user,
+            token
+        }));
+
         setUser(user);
         setToken(token);
     }
     
     const handleRegister = async (formData: FormRegisterParams) => {
         const { user, token } = await authService.registerUser(formData);
-        
+
+        await AsyncStorage.setItem("dt-money-user", JSON.stringify({
+            user,
+            token
+        }));
+
         setUser(user);
         setToken(token);
     }
     
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await AsyncStorage.clear();
+        
         setUser(null);
         setToken(null);
     }
 
+    const restoreUserSession = async () => {
+        const userData = await AsyncStorage.getItem("dt-money-user");
+
+        if(userData){
+            const {user, token} = JSON.parse(userData) as IAuthenticateResponse;
+            
+            setUser(user);
+            setToken(token);
+        }
+
+        return userData;
+    }
 
     return (
         <AuthContext.Provider value={{
             handleAuthenticate, 
             handleRegister, 
             handleLogout,
+            restoreUserSession,
             user, 
             token
         }}>
