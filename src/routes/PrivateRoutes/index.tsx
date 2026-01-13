@@ -11,7 +11,7 @@ const PrivateRoutes = () => {
     return (
         <PrivateStack.Navigator
             screenOptions={{
-                headerShown: true
+                headerShown: false
             }}>
             <PrivateStack.Screen name="Home" component={Home} />
         </PrivateStack.Navigator>
